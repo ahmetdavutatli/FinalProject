@@ -1,53 +1,90 @@
 package com.example.finalproject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String DESIGNS_COLLECTION = "designs";
+    private static final String DESIGNERS_COLLECTION = "designers";
 
-    FirebaseFirestore firestore;
+    private RecyclerView recyclerViewDesigns;
+    private DesignListAdapter designListAdapter;
+    private List<Design> designs;
+    private FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        recyclerViewDesigns = findViewById(R.id.recycler_view_designs);
+
+        designs = new ArrayList<>();
+        designListAdapter = new DesignListAdapter(designs);
+        recyclerViewDesigns.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewDesigns.setAdapter(designListAdapter);
+
         firestore = FirebaseFirestore.getInstance();
+        firestore.collection(DESIGNS_COLLECTION)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            // Hata oluştu.
+                            return;
+                        }
+                        designs.clear();
+                        for (QueryDocumentSnapshot documentSnapshot : snapshot) {
+                            Design design = documentSnapshot.toObject(Design.class);
+                            design.setId(documentSnapshot.getId());
+                            // Tasarımcının bilgilerini getirir.
+                            String designerId = design.getId();
+                            firestore.collection(DESIGNERS_COLLECTION).document(designerId)
+                                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot snapshot) {
+                                            Designer designer = snapshot.toObject(Designer.class);
+                                            designer.setId(snapshot.getId());
+                                            design.setDesigner(designer);
+                                            designs.add(design);
+                                            designListAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+                        }
+                    }
+                });
 
-        Map<String,Object> users = new HashMap<>();
-        users.put("name","John");
-        users.put("lastname","Doe");
-        users.put("age",25);
-
-        firestore.collection("users").add(users).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        designListAdapter.setOnItemClickListener(new DesignListAdapter.OnItemClickListener() {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(MainActivity.this, "User added", Toast.LENGTH_LONG).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_LONG).show();
+            public void onItemClick(Design design) {
+                Intent intent = new Intent(MainActivity.this, MakeOfferActivity.class);
+                intent.putExtra("design", (Parcelable) design);
+                startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
     }
 }
