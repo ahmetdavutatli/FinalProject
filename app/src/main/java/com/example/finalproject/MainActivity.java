@@ -54,14 +54,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            // Hata oluştu.
                             return;
                         }
                         designs.clear();
                         for (QueryDocumentSnapshot documentSnapshot : snapshot) {
                             Design design = documentSnapshot.toObject(Design.class);
                             design.setId(documentSnapshot.getId());
-                            // Tasarımcının bilgilerini getirir.
+                            // Tasarımcının bilgilerini getir
                             String designerId = design.getId();
                             firestore.collection(DESIGNERS_COLLECTION).document(designerId)
                                     .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

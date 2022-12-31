@@ -6,7 +6,7 @@ public class Design {
     private String description;
     private Designer designer;
 
-    public Design() {} // Firebase gereği boş bir constructor gerekir.
+    public Design() {} // Firebase için boş bir constructor
 
     public Design(String id, String imageUrl, String description, Designer designer) {
         this.id = id;

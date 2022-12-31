@@ -60,7 +60,6 @@ public class MakeOfferActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
-                                // Teklifin tutulacağı document'in id'sini tasarım document'ine ekler.
                                 String offerId = documentReference.getId();
                                 firestore.collection(DESIGNS_COLLECTION).document(design.getId())
                                         .update("offerIds", FieldValue.arrayUnion(offerId))

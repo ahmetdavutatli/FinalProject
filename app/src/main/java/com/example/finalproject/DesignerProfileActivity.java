@@ -68,14 +68,13 @@ public class DesignerProfileActivity extends AppCompatActivity {
         recyclerViewDesigns.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewDesigns.setAdapter(designListAdapter);
 
-        // Tasarımcının paylaştığı tasarımları getirir.
+        // Tasarımcının paylaştığı tasarımları getir
         firestore.collection(DESIGNS_COLLECTION)
                 .whereEqualTo("designerId", designerId)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            // Hata oluştu.
                             return;
                         }
                         designs.clear();

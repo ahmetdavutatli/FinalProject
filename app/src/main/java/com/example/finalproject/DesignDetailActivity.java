@@ -52,7 +52,7 @@ public class DesignDetailActivity extends AppCompatActivity {
                         design = snapshot.toObject(Design.class);
                         design.setId(snapshot.getId());
                         textViewDescription.setText(design.getDescription());
-                        // Tasarımcının bilgilerini getirir.
+                        // Tasarımcının bilgilerini getir
                         String designerId = design.getId();
                         firestore.collection(DESIGNERS_COLLECTION).document(designerId)
                                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -63,7 +63,7 @@ public class DesignDetailActivity extends AppCompatActivity {
                                         textViewDesignerName.setText(designer.getName());
                                     }
                                 });
-                        // Resmi gösterir.
+                        // Resmi göster
                         Glide.with(DesignDetailActivity.this).load(
                                 design.getImageUrl()).into(imageViewDesign);
                     }
@@ -71,8 +71,6 @@ public class DesignDetailActivity extends AppCompatActivity {
         buttonMakeOffer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Burada teklif yapma işlemleri yapılır.
-                // Örnek olarak, teklif yapma sayfasına yönlendirme yapılabilir.
                 Intent intent = new Intent(DesignDetailActivity.this, MakeOfferActivity.class);
                 intent.putExtra("designId", design.getId());
                 intent.putExtra("designerId", designer.getId());

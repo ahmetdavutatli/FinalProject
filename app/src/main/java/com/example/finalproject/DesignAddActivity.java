@@ -49,8 +49,6 @@ public class DesignAddActivity extends AppCompatActivity {
         mDesign.setDescription(description);
         mDesign.setImageUrl(String.valueOf(image));
 
-        // Burada tasarımın veritabanına kaydedilmesi gereken işlemler yapılabilir.
-        // Örneğin:
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference designRef = database.getReference("designs").push();
         designRef.setValue(mDesign);

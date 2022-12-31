@@ -6,7 +6,7 @@ public class Offer {
     private Manufacturer manufacturer;
     private double amount;
 
-    public Offer() {} // Firebase gereği boş bir constructor gerekir.
+    public Offer() {} // Firebase için boş bir constructor
 
     public Offer(String id, Design design, Manufacturer manufacturer, double amount) {
         this.id = id;

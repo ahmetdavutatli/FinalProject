@@ -6,7 +6,7 @@ public class Manufacturer {
     private String about;
     private String contactInfo;
 
-    public Manufacturer() {} // Firebase gereği boş bir constructor gerekir.
+    public Manufacturer() {} // Firebase için boş bir constructor
 
     public Manufacturer(String id, String name, String about, String contactInfo) {
         this.id = id;

@@ -5,7 +5,7 @@ public class Designer {
     private String name;
     private String profileImageUrl;
 
-    public Designer() {} // Firebase gereği boş bir constructor gerekir.
+    public Designer() {} // Firebase için boş bir constructor
 
     public Designer(String id, String name, String profileImageUrl) {
         this.id = id;
