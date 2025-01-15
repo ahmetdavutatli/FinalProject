@@ -45,7 +45,25 @@ public class MainActivity extends BaseActivity {
         initBestFood();
         initCategory();
         setVariable();
+
+        binding.logoutBtn.setOnClickListener(v -> {
+            auth.signOut();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (auth.getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
 
     private void setVariable() {
         binding.cartBtn.setOnClickListener(v -> {

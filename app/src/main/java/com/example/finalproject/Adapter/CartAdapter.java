@@ -64,9 +64,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.Viewholder> {
                 .into(holder.pic);
 
         holder.title.setText(listItemSelected.get(position).getTitle());
-        holder.feeEachItem.setText("$" + listItemSelected.get(position).getPrice());
-        holder.totalEachItem.setText(listItemSelected.get(position).getNumberInCart() + "* $"
-                + (listItemSelected.get(position).getNumberInCart() * listItemSelected.get(position).getPrice()));
+        holder.totalEachItem.setText(listItemSelected.get(position).getNumberInCart() + "* $" + listItemSelected.get(position).getPrice());
+        holder.feeEachItem.setText( "*$" + (listItemSelected.get(position).getNumberInCart() * listItemSelected.get(position).getPrice()));
 
         holder.num.setText(String.valueOf(listItemSelected.get(position).getNumberInCart()));
 

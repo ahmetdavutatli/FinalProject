@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Foods implements Serializable {
 
-    private int CatehoryId;
+    private int CategoryId;
 
     private String Description;
 
@@ -38,12 +38,12 @@ public class Foods implements Serializable {
     public Foods() {
     }
 
-    public int getCatehoryId() {
-        return CatehoryId;
+    public int getCategoryId() {
+        return CategoryId;
     }
 
-    public void setCatehoryId(int catehoryId) {
-        CatehoryId = catehoryId;
+    public void setCategoryId(int categoryId) {
+        CategoryId = categoryId;
     }
 
     public int getTimeId() {

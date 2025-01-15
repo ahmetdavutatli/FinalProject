@@ -1,6 +1,7 @@
 package com.example.finalproject.Activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.Adapter.ListFoodAdapter;
+import com.example.finalproject.Domain.Category;
 import com.example.finalproject.Domain.Foods;
 import com.example.finalproject.R;
 import com.example.finalproject.databinding.ActivityListFoodBinding;
@@ -55,60 +57,130 @@ public class ListFoodActivity extends BaseActivity {
 
 
     private void initList() {
-        DatabaseReference myRef = database.getReference("Foods");
+        DatabaseReference categoryRef = database.getReference("Category");
         binding.progressBar.setVisibility(View.VISIBLE);
-        final ArrayList<Foods>[] list = new ArrayList[]{new ArrayList<>()};
-        Query query;
 
         if (isSearch) {
-            query = myRef; // Fetch all data for filtering on the client side
+            // Step 1: Search for a matching category
+            categoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Integer matchedCategoryId = null;
+                        for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                            Category category = categorySnapshot.getValue(Category.class);
+                            if (category != null) {
+                                Log.d("CategorySearch", "Category: " + category.getName() + ", Id: " + category.getId());
+                                if (category.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                                    matchedCategoryId = category.getId();
+                                    Log.d("CategorySearch", "Matched Category: " + category.getName() + " (Id: " + matchedCategoryId + ")");
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (matchedCategoryId != null) {
+                            // Fetch foods by matched category
+                            fetchFoodsByCategory(matchedCategoryId);
+                        } else {
+                            // Fallback: Search foods by title
+                            fetchFoodsByTitle(searchText);
+                        }
+                    } else {
+                        // Fallback: No categories found, search foods by title
+                        fetchFoodsByTitle(searchText);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    binding.progressBar.setVisibility(View.GONE);
+                    Log.e("CategorySearch", "Error fetching categories: " + error.getMessage());
+                }
+            });
         } else {
-            query = myRef.orderByChild("CategoryId").equalTo(categoryId);
+            // If not searching, fetch foods directly by categoryId
+            fetchFoodsByCategory(categoryId);
         }
+    }
+
+    private void fetchFoodsByCategory(int categoryId) {
+        Log.d("FetchFoodsByCategory", "Fetching foods for CategoryId: " + categoryId);
+        DatabaseReference foodRef = database.getReference("Foods");
+        Query query = foodRef.orderByChild("CategoryId").equalTo(categoryId);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Foods> foodList = new ArrayList<>();
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                        Foods food = issue.getValue(Foods.class);
+                    for (DataSnapshot foodSnapshot : dataSnapshot.getChildren()) {
+                        Foods food = foodSnapshot.getValue(Foods.class);
                         if (food != null) {
-                            list[0].add(food);
+                            foodList.add(food);
                         }
                     }
-
-                    // Filter the list based on the search text
-                    if (isSearch) {
-                        list[0] = filterListBySearchText(list[0], searchText);
-                    }
-
-                    if (!list[0].isEmpty()) {
-                        binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodActivity.this, 2));
-                        adapterListFood = new ListFoodAdapter(list[0]);
-                        binding.foodListView.setAdapter(adapterListFood);
-                    }
-                    binding.progressBar.setVisibility(View.GONE);
+                    Log.d("FetchFoodsByCategory", "Foods fetched: " + foodList.size());
+                } else {
+                    Log.d("FetchFoodsByCategory", "No foods found for CategoryId: " + categoryId);
                 }
+
+                // Update the RecyclerView
+                updateRecyclerView(foodList);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 binding.progressBar.setVisibility(View.GONE);
+                Log.e("FetchFoodsByCategory", "Error: " + error.getMessage());
             }
         });
     }
 
-    /**
-     * Filters the list of foods based on the search text.
-     */
-    private ArrayList<Foods> filterListBySearchText(ArrayList<Foods> list, String searchText) {
-        ArrayList<Foods> filteredList = new ArrayList<>();
-        for (Foods food : list) {
-            if (food.getTitle() != null && food.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
-                filteredList.add(food);
+    private void fetchFoodsByTitle(String searchText) {
+        Log.d("FetchFoodsByTitle", "Searching foods by title containing: " + searchText);
+        DatabaseReference foodRef = database.getReference("Foods");
+        foodRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Foods> foodList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot foodSnapshot : dataSnapshot.getChildren()) {
+                        Foods food = foodSnapshot.getValue(Foods.class);
+                        if (food != null && food.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                            foodList.add(food);
+                        }
+                    }
+                    Log.d("FetchFoodsByTitle", "Foods fetched by title: " + foodList.size());
+                } else {
+                    Log.d("FetchFoodsByTitle", "No foods found for title: " + searchText);
+                }
+
+                // Update the RecyclerView
+                updateRecyclerView(foodList);
             }
-        }
-        return filteredList;
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                binding.progressBar.setVisibility(View.GONE);
+                Log.e("FetchFoodsByTitle", "Error fetching foods: " + error.getMessage());
+            }
+        });
     }
+
+    private void updateRecyclerView(ArrayList<Foods> foodList) {
+        if (!foodList.isEmpty()) {
+            binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodActivity.this, 2));
+            adapterListFood = new ListFoodAdapter(foodList);
+            binding.foodListView.setAdapter(adapterListFood);
+        } else {
+            // Optionally show a "No results found" message
+            Log.d("RecyclerView", "No results to display.");
+        }
+        binding.progressBar.setVisibility(View.GONE);
+    }
+
+
+
 
 }
