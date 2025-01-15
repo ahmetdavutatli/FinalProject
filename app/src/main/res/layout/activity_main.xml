@@ -2,11 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".MainActivity">
+    tools:context=".Activity.MainActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,7 +18,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_margin="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_height="match_parent">
@@ -50,9 +49,8 @@
                     android:text="Ahmet Davut Atli"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/textView"
-                    app:layout_constraintStart_toStartOf="parent" />
-
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -60,12 +58,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:background="@drawable/grey_background"
                     android:padding="12dp"
@@ -74,44 +73,44 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"
                     android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
                     android:background="@drawable/grey_background"
                     android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/editTextText"
+                        android:id="@+id/searchEdt"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
+                        android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
                         android:layout_marginStart="6dp"
                         android:layout_marginEnd="6dp"
                         android:textSize="16sp"
-                        android:textAlignment="center"
                         android:layout_weight="1"
                         android:ems="10"
                         android:inputType="text"
-                        android:hint="Search Food"
+                        android:hint="Search Food..."
                         android:background="#00ffffff"/>
 
                     <ImageView
-                        android:id="@+id/imageView3"
+                        android:id="@+id/searchBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="6dp"
                         android:layout_gravity="center"
+                        android:layout_marginEnd="6dp"
                         app:srcCompat="@drawable/search_icon" />
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/cartBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:padding="12dp"
                     android:background="@drawable/grey_background"
-                    android:layout_weight="1"
                     app:srcCompat="@drawable/basket" />
             </LinearLayout>
 
@@ -126,6 +125,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+
                     android:layout_weight="0.333"
                     android:background="@drawable/grey_background"
                     android:orientation="horizontal">
@@ -136,7 +136,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="6dp"
-                        android:layout_weight="1"
                         app:srcCompat="@drawable/location" />
 
                     <Spinner
@@ -145,7 +144,10 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:background="@null" />
+                        android:background="@null"
+                        app:layout_constraintBottom_toBottomOf="@+id/searchBtn"
+                        app:layout_constraintStart_toEndOf="@+id/searchBtn"
+                        app:layout_constraintTop_toTopOf="@+id/searchBtn" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -163,7 +165,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="6dp"
-                        android:layout_weight="1"
                         app:srcCompat="@drawable/time" />
 
                     <Spinner
@@ -183,12 +184,11 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:id="@+id/imageView53"
+                        android:id="@+id/imageView51"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="6dp"
-                        android:layout_weight="1"
                         app:srcCompat="@drawable/dollar" />
 
                     <Spinner
@@ -210,18 +210,17 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView34"
+                    android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Today's Best Foods"
+                    android:text="Today's best Foods"
                     android:textColor="@color/white"
                     android:textSize="22sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/textView35"
+                    android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -238,10 +237,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ProgressBar
                     android:id="@+id/progressBarBestFood"
@@ -263,7 +261,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView24"
+                    android:id="@+id/textView23"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -271,6 +269,8 @@
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     android:textStyle="bold" />
+
+
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -296,9 +296,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
